@@ -74,7 +74,7 @@ jobs:
         make ARCH=${{ matrix.arch }}
         echo UPLOAD_FILE=cutter-deps-qt-linux-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
         echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
-    - uses: actions/upload-artifact@v2
+    - uses: actions/upload-artifact@v4
       if: startsWith(github.event.ref, 'refs/tags') == false
       with:
         name: ${{ env.UPLOAD_FILE }}
