@@ -1,0 +1,51 @@
+name: package build windows
+
+on:
+  workflow_dispatch:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        name: [
+          windows-x86_64
+        ]
+        include:
+          - name: windows-x86_64
+            os: windows-2019
+            arch: x86_64
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+    - name: build windows
+      if: contains(matrix.os, 'windows')
+      shell: powershell
+      run: |
+        ./build_windows.ps1
+        echo "UPLOAD_FILE=cutter-deps-qt-win-${{ matrix.arch }}.tar.gz" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+        echo "UPLOAD_ASSET_TYPE=application/gzip" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+    - uses: actions/upload-artifact@v4
+      if: startsWith(github.event.ref, 'refs/tags') == false
+      with:
+        name: ${{ env.UPLOAD_FILE }}
+        path: ${{ env.UPLOAD_FILE }}
+        if-no-files-found: warn
+    - name: Get release
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      id: get_release
+      uses: karliss/get-release@bee343636450eb2e9b85d9f1592d8d73c408dc74
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload release assets
+      if: steps.get_release.outputs.upload_url != null
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ env.UPLOAD_FILE }}
+          asset_name: ${{ env.UPLOAD_FILE }}
+          asset_content_type: ${{ env.UPLOAD_ASSET_TYPE }}
