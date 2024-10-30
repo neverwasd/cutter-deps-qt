@@ -35,7 +35,6 @@ jobs:
           libclang-12-dev \
           llvm-12
         apt list --installed
-        sudo apt remove -y llvm-10 clang-10
         make ARCH=${{ matrix.arch }}
         echo UPLOAD_FILE=cutter-deps-qt-linux-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
         echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
