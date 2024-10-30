@@ -32,6 +32,7 @@ jobs:
           libgl1-mesa-dev \
           libglu1-mesa-dev \
           libxcb-*-dev \
+          libclang-11-dev \
           libclang-12-dev \
           llvm-12
         apt list --installed
