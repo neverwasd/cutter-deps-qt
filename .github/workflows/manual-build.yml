@@ -16,7 +16,7 @@ on:
 jobs:
   build:
     runs-on: ${{ contains(matrix.name, 'linux') && 'self-hosted' || matrix.os }}
-    container: ${{ contains(matrix.name, 'linux') && 'ubuntu' || '' }}
+    container: ${{ contains(matrix.name, 'linux') && 'ubuntu:20.04' || '' }}
     
     strategy:
       fail-fast: false
@@ -37,7 +37,7 @@ jobs:
         run: |
           echo "Building for Linux ${{ matrix.arch }}"
           apt-get update
-          apt-get -y install \
+          apt-get -y --no-install-recommends install \
             libxcb1-dev \
             libxkbcommon-dev \
             libxkbcommon-x11-dev \
@@ -49,9 +49,10 @@ jobs:
             libclang-12-dev \
             llvm-12
           apt list --installed
-          make ARCH=${{ matrix.arch }}
-          echo UPLOAD_FILE=cutter-deps-qt-linux-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
-          echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
+          apt remove llvm-10 clang-10
+          #make ARCH=${{ matrix.arch }}
+          #echo UPLOAD_FILE=cutter-deps-qt-linux-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
+          #echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
 
       - name: Build for macOS
         if: contains(matrix.name, 'macos')
