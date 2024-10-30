@@ -1,0 +1,51 @@
+name: package build macos-x86_64
+
+on:
+  workflow_dispatch:
+    branches:
+    - master
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        name: [
+          macos-x86_64
+        ]
+        include:
+          - name: macos-x86_64
+            os: macos-12
+            arch: x86_64
+      fail-fast: false
+    steps:
+    - uses: actions/checkout@v2
+    - name: build macos
+      if: contains(matrix.os, 'macos')
+      run: |
+        xcode-select --print-path
+        make ARCH=${{ matrix.arch }} BUILD_THREADS=1
+        echo UPLOAD_FILE=cutter-deps-qt-macos-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
+        echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
+    - uses: actions/upload-artifact@v4
+      if: startsWith(github.event.ref, 'refs/tags') == false
+      with:
+        name: ${{ env.UPLOAD_FILE }}
+        path: ${{ env.UPLOAD_FILE }}
+        if-no-files-found: warn
+    - name: Get release
+      if: github.event_name == 'push' && startsWith(github.event.ref, 'refs/tags')
+      id: get_release
+      uses: karliss/get-release@bee343636450eb2e9b85d9f1592d8d73c408dc74
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: Upload release assets
+      if: steps.get_release.outputs.upload_url != null
+      uses: actions/upload-release-asset@v1.0.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ${{ env.UPLOAD_FILE }}
+          asset_name: ${{ env.UPLOAD_FILE }}
+          asset_content_type: ${{ env.UPLOAD_ASSET_TYPE }}
