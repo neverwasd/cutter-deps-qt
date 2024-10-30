@@ -34,10 +34,11 @@ jobs:
 
       - name: Build for Linux
         if: contains(matrix.name, 'linux')
+        shell: bash
         run: |
           echo "Building for Linux ${{ matrix.arch }}"
           apt-get update
-          apt-get -y --no-install-recommends install \
+          apt-get -y install \
             libxcb1-dev \
             libxkbcommon-dev \
             libxkbcommon-x11-dev \
