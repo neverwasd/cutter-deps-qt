@@ -15,7 +15,7 @@ on:
 
 jobs:
   build:
-    runs-on: ${{ matrix.os }}
+    runs-on: ${{ contains(matrix.name, 'linux') && 'self-hosted' || matrix.os }}
     container: ${{ contains(matrix.name, 'linux') && 'ubuntu:20.04' || '' }}
     
     strategy:
