@@ -24,7 +24,7 @@ jobs:
       if: contains(matrix.os, 'ubuntu')
       run: |
         sudo apt-get update
-        sudo apt-get install \
+        sudo apt-get -y install \
           libxcb1-dev \
           libxkbcommon-dev \
           libxkbcommon-x11-dev \
@@ -35,7 +35,7 @@ jobs:
           libclang-12-dev \
           llvm-12
         apt list --installed
-        sudo apt remove llvm-10 clang-10
+        sudo apt remove -y llvm-10 clang-10
         make ARCH=${{ matrix.arch }}
         echo UPLOAD_FILE=cutter-deps-qt-linux-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
         echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
