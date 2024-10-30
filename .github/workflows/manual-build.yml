@@ -40,6 +40,8 @@ jobs:
           export DEBIAN_FRONTEND=noninteractive
           apt-get update
           apt-get -y install \
+            build-essential \
+            cmake \
             libxcb1-dev \
             libxkbcommon-dev \
             libxkbcommon-x11-dev \
