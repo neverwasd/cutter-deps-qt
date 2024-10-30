@@ -37,6 +37,7 @@ jobs:
         shell: bash
         run: |
           echo "Building for Linux ${{ matrix.arch }}"
+          export DEBIAN_FRONTEND=noninteractive
           apt-get update
           apt-get -y install \
             libxcb1-dev \
@@ -46,7 +47,6 @@ jobs:
             libgl1-mesa-dev \
             libglu1-mesa-dev \
             libxcb-*-dev \
-            libclang-11-dev \
             libclang-12-dev \
             llvm-12
           apt list --installed
