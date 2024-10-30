@@ -157,7 +157,7 @@ qt: ${QT_SRC_DIR} ${PLATFORM_QT_DEPS}
 		../${PLATFORM_QT_CONFIGURE} \
 			-prefix "${QT_PREFIX}" \
 			-opensource -confirm-license \
-			-release \
+			-debug \
 			-qt-libpng \
 			-qt-libjpeg \
 			-no-feature-cups \
