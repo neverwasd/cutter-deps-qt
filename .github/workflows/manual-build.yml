@@ -62,20 +62,19 @@ jobs:
         if: contains(matrix.name, 'macos')
         run: |
           echo "Building for macOS ${{ matrix.arch }}"
-          #echo "Building for macOS ARM64"
-          #xcode-select --print-path
-          #make ARCH=${{ matrix.arch }} BUILD_THREADS=1
-          #echo UPLOAD_FILE=cutter-deps-qt-macos-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
-          #echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
+          xcode-select --print-path
+          make ARCH=${{ matrix.arch }} BUILD_THREADS=1
+          echo UPLOAD_FILE=cutter-deps-qt-macos-${{ matrix.arch }}.tar.gz >> $GITHUB_ENV
+          echo UPLOAD_ASSET_TYPE=application/gzip >> $GITHUB_ENV
 
       - name: Build for Windows
         if: contains(matrix.name, 'windows')
         shell: powershell
         run: |
           echo "Building for Windows ${{ matrix.arch }}"
-          #./build_windows.ps1
-          #echo "UPLOAD_FILE=cutter-deps-qt-win-${{ matrix.arch }}.tar.gz" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
-          #echo "UPLOAD_ASSET_TYPE=application/gzip" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          ./build_windows.ps1
+          echo "UPLOAD_FILE=cutter-deps-qt-win-${{ matrix.arch }}.tar.gz" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+          echo "UPLOAD_ASSET_TYPE=application/gzip" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
 
       - uses: actions/upload-artifact@v4
         with:
